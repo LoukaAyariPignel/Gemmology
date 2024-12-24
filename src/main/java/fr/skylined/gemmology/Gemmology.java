@@ -1,5 +1,6 @@
 package fr.skylined.gemmology;
 
+import fr.skylined.gemmology.item.ModItems;
 import net.fabricmc.api.ModInitializer;
 
 import org.slf4j.Logger;
@@ -11,6 +12,6 @@ public class Gemmology implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-
+		ModItems.registerModItems();
 	}
 }
