@@ -1,8 +1,6 @@
 package fr.skylined.gemmology.item.custom;
 
-import fr.skylined.gemmology.energy.LightStorage;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.LeavesBlock;
+
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.item.Item;
@@ -16,13 +14,11 @@ import net.minecraft.world.World;
 import java.util.List;
 import java.util.Random;
 
-public class GemItem extends Item implements LightStorage {
+public class GemItem extends Item {
 
     private static final String WAVELENGTH_KEY = "Wavelength";
-    private static final String LUX_KEY = "Lux";
 
     private double wavelength;  // Longueur d'onde de la gemme
-    private int lux;  // Quantité de lux générée par la gemme
 
     public GemItem(Settings settings) {
         super(settings);
@@ -33,7 +29,6 @@ public class GemItem extends Item implements LightStorage {
     public void onCraft(ItemStack stack, World world) {
         super.onCraft(stack, world);
         initializeWavelength(stack);
-        initializeLux();
     }
 
     // Initialiser la longueur d'onde de manière aléatoire entre 380 nm et 750 nm
@@ -49,57 +44,8 @@ public class GemItem extends Item implements LightStorage {
         }));
     }
 
-    // Initialiser la quantité de lux en fonction de la longueur d'onde
-    private void initializeLux() {
-        this.lux = calculateLux(this.wavelength); // Calculer les lux en fonction de la longueur d'onde
-    }
-
-    // Calculer les lux en fonction de la longueur d'onde
-    private int calculateLux(double wavelength) {
-        // Simuler la relation entre la longueur d'onde et la lux (exemple arbitraire)
-        if (wavelength < 450) {
-            return 200; // Bleu (longueur d'onde courte)
-        } else if (wavelength < 500) {
-            return 300; // Vert
-        } else if (wavelength < 600) {
-            return 250; // Jaune
-        } else {
-            return 100; // Rouge (longueur d'onde longue)
-        }
-    }
-
-    @Override
-    public int getLux() {
-        return this.lux;
-    }
-
-    @Override
-    public void setLux(int lux) {
-        this.lux = lux;
-    }
-
-    @Override
-    public double getWavelength() {
-        return this.wavelength;
-    }
-
-    @Override
     public void setWavelength(double wavelength) {
         this.wavelength = wavelength;
-    }
-
-    // Sauvegarder les données NBT de la gemme
-    @Override
-    public void saveToNbt(NbtCompound nbt) {
-        nbt.putDouble(WAVELENGTH_KEY, this.wavelength);
-        nbt.putInt(LUX_KEY, this.lux);
-    }
-
-    // Charger les données NBT de la gemme
-    @Override
-    public void loadFromNbt(NbtCompound nbt) {
-        this.wavelength = nbt.getDouble(WAVELENGTH_KEY);
-        this.lux = nbt.getInt(LUX_KEY);
     }
 
     @Override
@@ -107,29 +53,25 @@ public class GemItem extends Item implements LightStorage {
         super.appendTooltip(stack, context, tooltip, type);
 
         // Récupérer les données NBT de la gemme
-        NbtComponent nbtComponent = stack.get(DataComponentTypes.CUSTOM_DATA);  // Utiliser DataComponentTypes pour récupérer les données
+        NbtComponent nbtComponent = stack.get(DataComponentTypes.CUSTOM_DATA);
 
         if (nbtComponent != null) {
             NbtCompound nbt = nbtComponent.copyNbt();
 
             double wavelength = nbt.getDouble(WAVELENGTH_KEY);
-            int lux = nbt.getInt(LUX_KEY);
 
-            // Afficher la longueur d'onde dans le tooltip
             tooltip.add(Text.literal("Longueur d'onde: " + String.format("%.1f nm", wavelength)));
 
-            // Affichage de la couleur en fonction de la longueur d'onde
             tooltip.add(Text.literal("Couleur").styled(style -> style.withColor(getColorFromWavelength(wavelength))));
         }
     }
 
     // Calculer la couleur en fonction de la longueur d'onde (hue)
     private TextColor getColorFromWavelength(double wavelength) {
-        // Convertir la longueur d'onde en une valeur de teinte (hue)
         float hue = (float) ((wavelength - 380) / (750 - 380));  // Plage de 0 à 1
         int rgb = java.awt.Color.HSBtoRGB(hue, 1.0f, 1.0f);  // Convertir en RGB
 
-        // Convertir l'entier RGB en un TextColor compatible avec Minecraft
         return TextColor.fromRgb(rgb);
     }
+
 }
