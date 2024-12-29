@@ -9,6 +9,7 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.world.World;
 
+import java.awt.*;
 import java.util.List;
 import java.util.Random;
 
@@ -46,17 +47,8 @@ public class GemItem extends Item {
             //Récuperer les données de la gemme
             float waveLenght = stack.getOrDefault(ModComponents.WAVE_LENGTH, 0f);
 
-            tooltip.add(Text.literal("Longueur d'onde: " + String.format("%.1f nm", waveLenght)));
-            tooltip.add(Text.literal("Couleur").styled(style -> style.withColor(getColorFromWavelength(waveLenght))));
+            tooltip.add(Text.literal(String.format("%.1f nm", waveLenght)).styled(style -> style.withColor(new Color(100, 100, 100).getRGB())));
         }
-    }
-
-    // Calculer la couleur en fonction de la longueur d'onde (hue)
-    private TextColor getColorFromWavelength(double wavelength) {
-        float hue = (float) ((wavelength - 380) / (750 - 380));  // Plage de 0 à 1
-        int rgb = java.awt.Color.HSBtoRGB(hue, 1.0f, 1.0f);  // Convertir en RGB
-
-        return TextColor.fromRgb(rgb);
     }
 
 }
