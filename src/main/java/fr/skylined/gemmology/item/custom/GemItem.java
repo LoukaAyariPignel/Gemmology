@@ -31,9 +31,9 @@ public class GemItem extends Item {
 
     // Initialiser la longueur d'onde de manière aléatoire entre 380 nm et 750 nm
     private void initializeWavelength(ItemStack stack) {
-        if(!stack.contains(ModComponents.WAVE_LENGHT)){
+        if(!stack.contains(ModComponents.WAVE_LENGTH)){
             float randomWavelength = 380 + (750 - 380) * new Random().nextFloat(); // Plage de longueurs d'onde visible (380 nm à 750 nm)
-            stack.set(ModComponents.WAVE_LENGHT, randomWavelength);
+            stack.set(ModComponents.WAVE_LENGTH, randomWavelength);
         }
 
     }
@@ -42,9 +42,9 @@ public class GemItem extends Item {
     public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
         super.appendTooltip(stack, context, tooltip, type);
 
-        if (stack.contains(ModComponents.WAVE_LENGHT)){
+        if (stack.contains(ModComponents.WAVE_LENGTH)){
             //Récuperer les données de la gemme
-            float waveLenght = stack.getOrDefault(ModComponents.WAVE_LENGHT, 0f);
+            float waveLenght = stack.getOrDefault(ModComponents.WAVE_LENGTH, 0f);
 
             tooltip.add(Text.literal("Longueur d'onde: " + String.format("%.1f nm", waveLenght)));
             tooltip.add(Text.literal("Couleur").styled(style -> style.withColor(getColorFromWavelength(waveLenght))));

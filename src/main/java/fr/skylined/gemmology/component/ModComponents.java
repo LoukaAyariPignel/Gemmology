@@ -12,9 +12,9 @@ public class ModComponents {
         Gemmology.LOGGER.info("Registering {} components", Gemmology.MOD_ID);
     }
 
-    public static final ComponentType<Float> WAVE_LENGHT = Registry.register(
+    public static final ComponentType<Float> WAVE_LENGTH = Registry.register(
             Registries.DATA_COMPONENT_TYPE,
-            Identifier.of(Gemmology.MOD_ID, "wave_lenght"),
+            Identifier.of(Gemmology.MOD_ID, "wave_length"),
             ComponentType.<Float>builder().codec(Codec.FLOAT).build()
     );
 }
