@@ -1,12 +1,10 @@
 package fr.skylined.gemmology.item.custom;
 
 
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
+import fr.skylined.gemmology.component.ModComponents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.world.World;
@@ -16,53 +14,40 @@ import java.util.Random;
 
 public class GemItem extends Item {
 
-    private static final String WAVELENGTH_KEY = "Wavelength";
 
-    private double wavelength;  // Longueur d'onde de la gemme
 
     public GemItem(Settings settings) {
         super(settings);
     }
 
-    // Initialisation de la longueur d'onde et de la lux lors du craft
+    // Initialisation de la longueur d'onde lors du craft
     @Override
     public void onCraft(ItemStack stack, World world) {
         super.onCraft(stack, world);
-        initializeWavelength(stack);
+        if(!world.isClient()){
+            initializeWavelength(stack);
+        }
     }
 
     // Initialiser la longueur d'onde de manière aléatoire entre 380 nm et 750 nm
     private void initializeWavelength(ItemStack stack) {
-        stack.apply(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT, comp -> comp.apply(currentNbt -> {
-            // Vérifier si l'NBT contient déjà la longueur d'onde
-            if (!currentNbt.contains(WAVELENGTH_KEY)) {
-                double randomWavelength = 380 + (750 - 380) * new Random().nextDouble(); // Plage de longueurs d'onde visible (380 nm à 750 nm)
-                setWavelength(randomWavelength);
-            }
-            // Sauvegarder la longueur d'onde dans l'NBT
-            currentNbt.putDouble(WAVELENGTH_KEY, this.wavelength);
-        }));
-    }
+        if(!stack.contains(ModComponents.WAVE_LENGHT)){
+            float randomWavelength = 380 + (750 - 380) * new Random().nextFloat(); // Plage de longueurs d'onde visible (380 nm à 750 nm)
+            stack.set(ModComponents.WAVE_LENGHT, randomWavelength);
+        }
 
-    public void setWavelength(double wavelength) {
-        this.wavelength = wavelength;
     }
 
     @Override
     public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
         super.appendTooltip(stack, context, tooltip, type);
 
-        // Récupérer les données NBT de la gemme
-        NbtComponent nbtComponent = stack.get(DataComponentTypes.CUSTOM_DATA);
+        if (stack.contains(ModComponents.WAVE_LENGHT)){
+            //Récuperer les données de la gemme
+            float waveLenght = stack.getOrDefault(ModComponents.WAVE_LENGHT, 0f);
 
-        if (nbtComponent != null) {
-            NbtCompound nbt = nbtComponent.copyNbt();
-
-            double wavelength = nbt.getDouble(WAVELENGTH_KEY);
-
-            tooltip.add(Text.literal("Longueur d'onde: " + String.format("%.1f nm", wavelength)));
-
-            tooltip.add(Text.literal("Couleur").styled(style -> style.withColor(getColorFromWavelength(wavelength))));
+            tooltip.add(Text.literal("Longueur d'onde: " + String.format("%.1f nm", waveLenght)));
+            tooltip.add(Text.literal("Couleur").styled(style -> style.withColor(getColorFromWavelength(waveLenght))));
         }
     }
 

@@ -11,7 +11,7 @@ import net.minecraft.util.Identifier;
 
 public class ModItems {
 
-    public static final Item GEM = registerItem("gem", new GemItem(new Item.Settings()));
+    public static final Item GEM = registerItem("gem", new GemItem(new Item.Settings()/*.component(ModComponents.WAVE_LENGHT, 380f)*/));
 
 
     private static Item registerItem(String name, Item item){
